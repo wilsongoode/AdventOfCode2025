@@ -39,26 +39,33 @@ struct Day02: AdventDay {
   }
   
   func part1() -> Int {
-    var invalidIDs: [Int] = []
-    idRanges.forEach { range in
-      range.striding(by: 1).forEach { id in
-        if !Self.isIdValid(id) {
-          invalidIDs.append(id)
-        }
+    idRanges.reduce(0) { sum, range in
+      sum + range.striding(by: 1).reduce(0) { rangeSum, id in
+        rangeSum + (Self.isIdValid(id) ? 0 : id)
       }
     }
-    return invalidIDs.reduce(0, +)
   }
   
   func part2() -> Int {
-    var invalidIDs: [Int] = []
-    idRanges.forEach { range in
-      range.striding(by: 1).forEach { id in
-        if !Self.isIdValidPart2(id) {
-          invalidIDs.append(id)
-        }
+    idRanges.reduce(0) { sum, range in
+      sum + range.striding(by: 1).reduce(0) { rangeSum, id in
+        rangeSum + (Self.isIdValidPart2(id) ? 0 : id)
       }
     }
-    return invalidIDs.reduce(0, +)
   }
 }
+
+/** Preoptimized, debug
+ Executing Advent of Code challenge 2...
+ Part 1: 29940924880
+ Part 2: 48631958998
+ Part 1 took 3.1185505 seconds, part 2 took 55.773416542 seconds.
+ Looks like you're benchmarking debug code. Try swift run -c release
+ Program ended with exit code: 0
+ 
+ Limited allocations, `swift run -c release AdventOfCode --benchmark`
+ Executing Advent of Code challenge 2...
+ Part 1: 29940924880
+ Part 2: 48631958998
+ Part 1 took 0.169590083 seconds, part 2 took 2.508390458 seconds.
+ */
