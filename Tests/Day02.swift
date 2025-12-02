@@ -21,11 +21,33 @@ struct Day02Tests {
 
   @Test func testPart1() async throws {
     let challenge = Day02(data: testData)
-    try await #expect(String(describing: challenge.part1()) == "1227775554")
+    #expect(String(describing: challenge.part1()) == "1227775554")
   }
 
-//  @Test func testPart2() async throws {
-//    let challenge = Day02(data: testData)
-//    #expect(String(describing: challenge.part2()) == "32000")
-//  }
+  @Test func testPart2() async throws {
+    let challenge = Day02(data: testData)
+    #expect(String(describing: challenge.part2()) == "4174379265")
+  }
+  
+  @Test(arguments: [
+    (11, false),
+    (22, false),
+    (99, false),
+    (111, false),
+    (999, false),
+    (1010, false),
+    (1188511885, false),
+    (222222, false),
+    (446446, false),
+    (38593859, false),
+    (565656, false),
+    (824824824, false),
+    (2121212121, false),
+    (1234567, true),
+    (89256, true),
+    (1111122222, true),
+  ])
+  func testPart2Valid(_ id: Int, expectedValid: Bool) {
+    #expect(Day02.isIdValidPart2(id) == expectedValid)
+  }
 }

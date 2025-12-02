@@ -17,7 +17,7 @@ struct Day02: AdventDay {
     }
   }
   
-  func isIdValid(_ id: Int) -> Bool {
+  static func isIdValid(_ id: Int) -> Bool {
     let string = String(id)
     guard string.count.isMultiple(of: 2) else { return true }
     let middleIndex = string.index(string.startIndex, offsetBy: string.count / 2)
@@ -26,11 +26,23 @@ struct Day02: AdventDay {
     return firstHalf != secondHalf
   }
   
-  func part1() async throws -> Int {
+  static func isIdValidPart2(_ id: Int) -> Bool {
+    let string = String(id)
+    guard string.count > 1 else { return true }
+    for chunkSize in 1...(string.count / 2) {
+      let chunks = string.chunks(ofCount: chunkSize)
+      if Set(chunks).count == 1 {
+        return false
+      }
+    }
+    return true
+  }
+  
+  func part1() -> Int {
     var invalidIDs: [Int] = []
     idRanges.forEach { range in
       range.striding(by: 1).forEach { id in
-        if !isIdValid(id) {
+        if !Self.isIdValid(id) {
           invalidIDs.append(id)
         }
       }
@@ -38,7 +50,15 @@ struct Day02: AdventDay {
     return invalidIDs.reduce(0, +)
   }
   
-//  func part2() async throws -> Int {
-//    <#code#>
-//  }
+  func part2() -> Int {
+    var invalidIDs: [Int] = []
+    idRanges.forEach { range in
+      range.striding(by: 1).forEach { id in
+        if !Self.isIdValidPart2(id) {
+          invalidIDs.append(id)
+        }
+      }
+    }
+    return invalidIDs.reduce(0, +)
+  }
 }
