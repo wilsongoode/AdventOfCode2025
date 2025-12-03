@@ -27,7 +27,17 @@ struct Day03Tests {
     ("818181911112111", 92),
   ])
   func testJoltage(bank: String, joltage: Int) async throws {
-    #expect(Day03.maxJoltage(bank: bank) == joltage)
+    #expect(Day03.maxJoltage(bank: bank, batteries: 2) == joltage)
+  }
+  
+  @Test(arguments: [
+    ("987654321111111", 987654321111),
+    ("811111111111119", 811111111119),
+    ("234234234234278", 434234234278),
+    ("818181911112111", 888911112111),
+  ])
+  func testJoltage12batteries(bank: String, joltage: Int) async throws {
+    #expect(Day03.maxJoltage(bank: bank, batteries: 12) == joltage)
   }
   
   @Test func testPart1() async throws {
