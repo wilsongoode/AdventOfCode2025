@@ -112,3 +112,14 @@ fileprivate enum RotationDirection: Character {
   case left = "L"
   case right = "R"
 }
+
+/**
+ Executing Advent of Code challenge 1...
+ The dial starts by pointing at 50.
+ Applying a sequence of 4036 operations.
+ Part 1: 984
+ The dial starts by pointing at 50.
+ Applying a sequence of 4036 operations.
+ Part 2: 5657
+ Part 1 took 0.001932791 seconds, part 2 took 0.001808584 seconds.
+ */
