@@ -75,16 +75,70 @@ struct Day08: AdventDay {
   }
   
   func part2() -> Int {
-    return 0
+    
+    let boxes = junctionBoxes
+    let boxSet = Set(boxes)
+    var distances: [Cable: Double] = [:]
+    for box in boxes {
+      for otherBox in boxes where box != otherBox {
+        let distance = box.distance(to: otherBox)
+        let cable = Cable(ends: [box, otherBox])
+        if distances.keys.contains(cable) { continue }
+        distances[cable] = distance
+      }
+    }
+    
+    var lastCable: Cable? = nil
+    let sortedCables = distances.sorted(by: { $0.value < $1.value })
+    var circuits: Set<Circuit> = []
+    for (cable, distance) in sortedCables {
+      // One circuit contains all of the boxes; we're done.
+      if circuits.first?.junctionBoxes.isSuperset(of: boxSet) ?? false {
+        break
+      }
+      // One of the circuits already has both cable ends
+      if circuits.contains(where: { $0.junctionBoxes.isSuperset(of: cable.ends) }) {
+        continue
+      }
+      // At least one of the circuits has an overlap with the cable
+      let circuitsWithOverlap = circuits.filter({ !$0.junctionBoxes.isDisjoint(with: cable.ends) })
+      if !circuitsWithOverlap.isEmpty {
+        // Only one circuit has overlap
+        if circuitsWithOverlap.count == 1, var circuit = circuitsWithOverlap.first {
+          circuits.remove(circuit)
+          circuit.insert(cable)
+          circuits.insert(circuit)
+          lastCable = cable
+          continue
+        }
+        // Two circuits have overlap
+        guard circuitsWithOverlap.count == 2 else {
+          fatalError("This shouldn't happen!")
+        }
+        
+        for circuit in circuitsWithOverlap {
+          circuits.remove(circuit)
+        }
+        var combinedCircuit = Circuit(junctionBoxes: Set(circuitsWithOverlap.flatMap(\.junctionBoxes)))
+        combinedCircuit.insert(cable)
+        circuits.insert(combinedCircuit)
+        lastCable = cable
+        continue
+      }
+      // No circuit touches this cable
+      let newCircuit = Circuit(junctionBoxes: cable.ends)
+      circuits.insert(newCircuit)
+    }
+    guard let lastCable else {
+      fatalError("no last cable")
+    }
+    let result = lastCable.ends.map(\.x).reduce(1, *)
+    return result
   }
 }
 
 struct Circuit: Hashable {
-//  var cables: Set<Cable>
   var junctionBoxes: Set<JunctionBox>
-//  {
-//    Set(cables.flatMap(\.ends))
-//  }
   
   mutating func insert(_ cable: Cable) {
     self.junctionBoxes.formUnion(cable.ends)
@@ -92,8 +146,6 @@ struct Circuit: Hashable {
 }
 
 struct Cable: Hashable {
-//  var start: JunctionBox
-//  var end: JunctionBox
   var ends: Set<JunctionBox>
 }
 
@@ -121,3 +173,10 @@ struct JunctionBox: Hashable {
     return Double(dx * dx + dy * dy + dz * dz).squareRoot()
   }
 }
+
+/**
+ Executing Advent of Code challenge 8...
+ Part 1: 175500
+ Part 2: 6934702555
+ Part 1 took 0.957556125 seconds, part 2 took 0.985781459 seconds.
+ */
